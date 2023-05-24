@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.exception.ObjectNotFoundException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.validator.ItemValidator;
@@ -16,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+@Repository
 public class ItemRepository implements ItemStorage {
 
     private final JdbcTemplate jdbcTemplate;

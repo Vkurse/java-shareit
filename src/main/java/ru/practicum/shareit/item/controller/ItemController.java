@@ -8,7 +8,7 @@ import ru.practicum.shareit.item.service.ItemService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/items")
+@RequestMapping(path = "/items")
 public class ItemController {
 
     private static final String USERID_HEADER = "X-Sharer-User-Id";

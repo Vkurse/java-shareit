@@ -1,6 +1,6 @@
 package ru.practicum.shareit.item.repository;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.exception.ObjectNotFoundException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.validator.ItemValidator;
-import ru.practicum.shareit.user.repository.UserStorage;
+import ru.practicum.shareit.user.model.User;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,16 +18,11 @@ import java.util.List;
 import java.util.Objects;
 
 @Repository
-public class ItemRepository implements ItemStorage {
+@RequiredArgsConstructor
+public class DbItemStorageImp implements ItemStorage {
 
     private final JdbcTemplate jdbcTemplate;
-    private final UserStorage userStorage;
 
-    @Autowired
-    public ItemRepository(JdbcTemplate jdbcTemplate, UserStorage userStorage) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.userStorage = userStorage;
-    }
 
     @Override
     public List<Item> getItems(Long userId) {
@@ -123,7 +118,23 @@ public class ItemRepository implements ItemStorage {
                 .name(rs.getString("name"))
                 .description(rs.getString("description"))
                 .available(rs.getBoolean("available"))
-                .owner(userStorage.getUser(rs.getLong("owner")))
+                .owner(getUser(rs.getLong("owner")))
+                .build();
+    }
+
+    private User getUser(Long id) {
+        final String sqlQuery = "SELECT * " +
+                "FROM users " +
+                "WHERE id = ? ";
+
+        return jdbcTemplate.queryForObject(sqlQuery, this::mapRowUser, id);
+    }
+
+    private User mapRowUser(ResultSet rs, int rowNum) throws SQLException {
+        return User.builder()
+                .id(rs.getLong("id"))
+                .name(rs.getString("name"))
+                .email(rs.getString("email"))
                 .build();
     }
 }

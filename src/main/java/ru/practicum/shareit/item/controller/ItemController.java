@@ -1,6 +1,6 @@
 package ru.practicum.shareit.item.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
@@ -8,16 +8,13 @@ import ru.practicum.shareit.item.service.ItemService;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(path = "/items")
 public class ItemController {
 
     private static final String USERID_HEADER = "X-Sharer-User-Id";
     private final ItemService itemService;
 
-    @Autowired
-    public ItemController(ItemService itemService) {
-        this.itemService = itemService;
-    }
 
     @GetMapping
     public List<Item> getItems(@RequestHeader(USERID_HEADER) Long userId) {

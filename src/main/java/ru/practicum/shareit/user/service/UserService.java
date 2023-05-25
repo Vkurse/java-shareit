@@ -1,24 +1,21 @@
 package ru.practicum.shareit.user.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.ObjectNotFoundException;
 import ru.practicum.shareit.exception.UserAlreadyExist;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.repository.UserRepository;
+import ru.practicum.shareit.user.repository.DbUserStorageImp;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private static final String NOT_FOUND = "User not found.";
-    private final UserRepository userRepository;
+    private final DbUserStorageImp userRepository;
 
-    @Autowired
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     public List<User> getUsers() {
         return userRepository.getUsers();
@@ -33,7 +30,7 @@ public class UserService {
 
     public User addUser(User user) {
         if (user.getEmail() == null) {
-            throw new IllegalArgumentException("Invalid user body.");
+            throw new IllegalArgumentException("Invalid user body. Incorrect email.");
         }
         if (userRepository.isUserExistsByEmail(user.getEmail())) {
             throw new UserAlreadyExist("User already exist.");

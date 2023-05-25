@@ -1,6 +1,6 @@
 package ru.practicum.shareit.item.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.InvalidEntityException;
 import ru.practicum.shareit.exception.ObjectNotFoundException;
@@ -12,6 +12,7 @@ import ru.practicum.shareit.user.repository.UserStorage;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ItemService {
 
     private static final String ITEM_NOT_FOUND = "Item not found.";
@@ -19,11 +20,6 @@ public class ItemService {
     private final ItemStorage itemStorage;
     private final UserStorage userStorage;
 
-    @Autowired
-    public ItemService(ItemStorage itemStorage, UserStorage userStorage) {
-        this.itemStorage = itemStorage;
-        this.userStorage = userStorage;
-    }
 
     public List<Item> getItems(Long userId) {
         return itemStorage.getItems(userId);

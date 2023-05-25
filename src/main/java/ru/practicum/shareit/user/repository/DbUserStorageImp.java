@@ -1,6 +1,6 @@
 package ru.practicum.shareit.user.repository;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -15,14 +15,11 @@ import java.util.List;
 import java.util.Objects;
 
 @Repository
-public class UserRepository implements UserStorage {
+@RequiredArgsConstructor
+public class DbUserStorageImp implements UserStorage {
 
     private final JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    public UserRepository(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     @Override
     public List<User> getUsers() {

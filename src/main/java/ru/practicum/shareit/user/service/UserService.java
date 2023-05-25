@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.ObjectNotFoundException;
 import ru.practicum.shareit.exception.UserAlreadyExist;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.repository.DbUserStorageImp;
+import ru.practicum.shareit.user.repository.UserStorage;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ import java.util.List;
 public class UserService {
 
     private static final String NOT_FOUND = "User not found.";
-    private final DbUserStorageImp userRepository;
+    private final UserStorage userRepository ;
 
 
     public List<User> getUsers() {

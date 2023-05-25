@@ -8,13 +8,15 @@ public interface UserStorage {
 
     List<User> getUsers();
 
-    User getUser(Long id);
+    User getUser(Long userId);
 
     User addUser(User user);
 
-    User updateUser(Long id, User user);
+    User updateUser(Long userId, User user);
 
-    Boolean deleteUser(Long id);
+    Boolean deleteUser(Long userId);
 
-    Boolean isUserExistsById(Long id);
+    Boolean isUserExistsById(Long userId);
+
+    Boolean isUserExistsByEmail(String email);
 }

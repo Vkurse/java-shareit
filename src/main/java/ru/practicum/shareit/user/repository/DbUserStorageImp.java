@@ -92,13 +92,14 @@ public class DbUserStorageImp implements UserStorage {
     }
 
     @Override
-    public Boolean isUserExistsById(Long id) {
+    public Boolean isUserExistsById(Long userId) {
         final String sqlQuery = "SELECT EXISTS " +
                 "(SELECT * FROM users WHERE id = ?) ";
 
-        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sqlQuery, Boolean.class, id));
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sqlQuery, Boolean.class, userId));
     }
 
+    @Override
     public Boolean isUserExistsByEmail(String email) {
         final String sqlQuery = "SELECT EXISTS(SELECT * FROM users WHERE email = ?)";
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sqlQuery, Boolean.class, email));

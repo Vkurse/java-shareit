@@ -14,7 +14,7 @@ import java.util.List;
 public class UserService {
 
     private static final String NOT_FOUND = "User not found.";
-    private final UserStorage userRepository ;
+    private final UserStorage userRepository;
 
 
     public List<User> getUsers() {

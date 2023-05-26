@@ -13,7 +13,7 @@ import java.util.*;
 @Primary
 @Repository
 @RequiredArgsConstructor
-public class InMemoryItemStorageImp implements ItemStorage {
+public class InMemoryItemStorageImpl implements ItemStorage {
 
     private final UserService userService;
     private final Map<Long, Item> items = new HashMap<>();

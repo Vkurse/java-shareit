@@ -19,7 +19,7 @@ import java.util.Objects;
 
 @Repository
 @RequiredArgsConstructor
-public class DbItemStorageImp implements ItemStorage {
+public class DbItemStorageImpl implements ItemStorage {
 
     private final JdbcTemplate jdbcTemplate;
 

@@ -12,7 +12,7 @@ import java.util.Map;
 
 @Primary
 @Repository
-public class InMemoryUserStorageImp implements UserStorage {
+public class InMemoryUserStorageImpl implements UserStorage {
 
     private final Map<Long, User> users = new HashMap<>();
     private final Map<String, Long> emails = new HashMap<>();

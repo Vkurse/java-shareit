@@ -16,7 +16,7 @@ import java.util.Objects;
 
 @Repository
 @RequiredArgsConstructor
-public class DbUserStorageImp implements UserStorage {
+public class DbUserStorageImpl implements UserStorage {
 
     private final JdbcTemplate jdbcTemplate;
 

@@ -19,7 +19,7 @@ import ru.practicum.shareit.item.repository.ItemJpaRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserJpaRepository;
 
-
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,6 +39,7 @@ public class BookingService {
     private final UserJpaRepository userRepository;
     private final ItemJpaRepository itemRepository;
 
+    @Transactional
     public BookingInfoDto addBooking(Long userId, BookingDto bookingDto) {
         if (!BookingValidator.bookingValidate(bookingDto)) {
             throw new InvalidEntityException("BookingDto is not valid.");
@@ -84,7 +85,7 @@ public class BookingService {
         BookingStatus bookingStatus = approved ? BookingStatus.APPROVED : BookingStatus.REJECTED;
 
         if (booking.getStatus() == bookingStatus) {
-            throw new InvalidEntityException("Status already " + bookingStatus.toString());
+            throw new InvalidEntityException("Status already " + bookingStatus);
         }
 
         booking.setStatus(bookingStatus);

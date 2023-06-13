@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class ItemJpaServiceImpl implements ItemService {
+public class ItemServiceImpl implements ItemService {
 
     private final ItemJpaRepository repository;
     private final UserJpaRepository userRepository;
@@ -170,7 +170,7 @@ public class ItemJpaServiceImpl implements ItemService {
         if (commentDto.getText().isEmpty() || commentDto.getText().isBlank()) {
             throw new InvalidEntityException("Invalid comment text.");
         }
-        if (!isAlreadyBook(userId, itemId)) {
+        if (!isAlreadyBooked(userId, itemId)) {
             throw new InvalidEntityException("User already hold item.");
         }
         if (isOwner(userId, itemId)) {
@@ -178,7 +178,7 @@ public class ItemJpaServiceImpl implements ItemService {
         }
     }
 
-    private Boolean isAlreadyBook(Long userId, Long itemId) {
+    private Boolean isAlreadyBooked(Long userId, Long itemId) {
         List<Booking> bookingList = bookingRepository.findByBooker_IdAndItem_IdOrderByStartAsc(userId, itemId);
         if (bookingList.isEmpty()) {
             throw new InvalidEntityException("User is not booked item");

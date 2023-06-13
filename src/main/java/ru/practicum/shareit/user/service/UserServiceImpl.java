@@ -2,12 +2,12 @@ package ru.practicum.shareit.user.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exception.EntityAlreadyExist;
-import ru.practicum.shareit.exception.ObjectNotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserJpaRepository;
+import ru.practicum.shareit.exception.EntityAlreadyExist;
+import ru.practicum.shareit.exception.ObjectNotFoundException;
 
 import javax.transaction.Transactional;
 import java.util.List;

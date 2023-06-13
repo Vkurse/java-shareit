@@ -112,6 +112,7 @@ public class BookingService {
 
         Sort sort = Sort.by(Sort.Direction.DESC, "start");
         List<Booking> bookingList = new ArrayList<>();
+        LocalDateTime dateTimeNow = LocalDateTime.now();
 
         User user = userRepository.findById(userId).orElseThrow(()
                 -> new ObjectNotFoundException(USER_ERROR));
@@ -121,13 +122,13 @@ public class BookingService {
                 bookingList = repository.findAllByBookerIdOrderByStartDesc(user.getId());
                 break;
             case PAST:
-                bookingList = repository.findAllByBookerIdAndEndIsBefore(user.getId(), LocalDateTime.now(), sort);
+                bookingList = repository.findAllByBookerIdAndEndIsBefore(user.getId(), dateTimeNow, sort);
                 break;
             case FUTURE:
-                bookingList = repository.findAllByBookerIdAndStartIsAfter(user.getId(), LocalDateTime.now(), sort);
+                bookingList = repository.findAllByBookerIdAndStartIsAfter(user.getId(), dateTimeNow, sort);
                 break;
             case CURRENT:
-                bookingList = repository.findAllByBookerIdAndStartIsBeforeAndEndIsAfter(user.getId(), LocalDateTime.now(), LocalDateTime.now(), sort);
+                bookingList = repository.findAllByBookerIdAndStartIsBeforeAndEndIsAfter(user.getId(), dateTimeNow, dateTimeNow, sort);
                 break;
             case WAITING:
                 bookingList = repository.findAllByBookerIdAndStatus(user.getId(), BookingStatus.WAITING);
@@ -150,6 +151,7 @@ public class BookingService {
 
         Sort sort = Sort.by(Sort.Direction.DESC, "start");
         List<Booking> bookingList = new ArrayList<>();
+        LocalDateTime dateTimeNow = LocalDateTime.now();
 
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new ObjectNotFoundException(USER_ERROR));
@@ -159,13 +161,13 @@ public class BookingService {
                 bookingList = repository.findAllByItem_Owner_IdOrderByStartDesc(user.getId());
                 break;
             case PAST:
-                bookingList = repository.findAllByItem_Owner_IdAndEndIsBefore(user.getId(), LocalDateTime.now(), sort);
+                bookingList = repository.findAllByItem_Owner_IdAndEndIsBefore(user.getId(), dateTimeNow, sort);
                 break;
             case FUTURE:
-                bookingList = repository.findAllByItem_Owner_IdAndStartIsAfter(user.getId(), LocalDateTime.now(), sort);
+                bookingList = repository.findAllByItem_Owner_IdAndStartIsAfter(user.getId(), dateTimeNow, sort);
                 break;
             case CURRENT:
-                bookingList = repository.findAllByItem_Owner_IdAndStartIsBeforeAndEndIsAfter(user.getId(), LocalDateTime.now(), LocalDateTime.now(), sort);
+                bookingList = repository.findAllByItem_Owner_IdAndStartIsBeforeAndEndIsAfter(user.getId(), dateTimeNow, dateTimeNow, sort);
                 break;
             case WAITING:
                 bookingList = repository.findAllByItem_Owner_IdAndStatus(user.getId(), BookingStatus.WAITING);

@@ -14,12 +14,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class UserJpaServiceImpl implements UserService {
+public class UserServiceImpl implements UserService {
 
     private final UserJpaRepository repository;
 
     @Autowired
-    public UserJpaServiceImpl(UserJpaRepository repository) {
+    public UserServiceImpl(UserJpaRepository repository) {
         this.repository = repository;
     }
 
@@ -55,7 +55,7 @@ public class UserJpaServiceImpl implements UserService {
     public UserDto updateUser(Long userId, UserDto user) {
         User updateUser = repository.findById(userId)
                 .orElseThrow(() -> new ObjectNotFoundException("User not found."));
-        return UserMapper.toUserDto(repository.save(userPatch(updateUser, user)));
+        return UserMapper.toUserDto(repository.save(updateNameAndEmailUser(updateUser, user)));
     }
 
     @Transactional
@@ -67,7 +67,7 @@ public class UserJpaServiceImpl implements UserService {
         repository.deleteById(userId);
     }
 
-    private User userPatch(User updatedUser, UserDto user) {
+    private User updateNameAndEmailUser(User updatedUser, UserDto user) {
 
         if (user.getName() != null) {
             updatedUser.setName(user.getName());

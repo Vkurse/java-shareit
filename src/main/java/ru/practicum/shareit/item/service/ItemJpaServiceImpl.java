@@ -1,6 +1,6 @@
 package ru.practicum.shareit.item.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
@@ -29,6 +29,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ItemJpaServiceImpl implements ItemService {
 
     private final ItemJpaRepository repository;
@@ -36,13 +37,6 @@ public class ItemJpaServiceImpl implements ItemService {
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
 
-    @Autowired
-    public ItemJpaServiceImpl(ItemJpaRepository repository, UserJpaRepository userRepository, BookingRepository bookingRepository, CommentRepository commentRepository) {
-        this.repository = repository;
-        this.userRepository = userRepository;
-        this.bookingRepository = bookingRepository;
-        this.commentRepository = commentRepository;
-    }
 
     @Override
     public List<ItemInfoDto> getItems(Long userId) {
@@ -119,6 +113,7 @@ public class ItemJpaServiceImpl implements ItemService {
         }
     }
 
+    @Override
     public CommentDto addComment(Long userId, Long itemId, CommentDto commentDto) {
         validateComment(userId, itemId, commentDto);
         Comment comment = CommentMapper.toComment(commentDto);

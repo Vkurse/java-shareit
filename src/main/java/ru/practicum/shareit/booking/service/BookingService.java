@@ -1,6 +1,6 @@
 package ru.practicum.shareit.booking.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
@@ -19,6 +19,7 @@ import ru.practicum.shareit.item.repository.ItemJpaRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserJpaRepository;
 
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class BookingService {
 
     private static final String USER_ERROR = "User not found.";
@@ -36,15 +38,6 @@ public class BookingService {
     private final BookingRepository repository;
     private final UserJpaRepository userRepository;
     private final ItemJpaRepository itemRepository;
-
-    @Autowired
-    public BookingService(BookingRepository repository,
-                          UserJpaRepository userRepository,
-                          ItemJpaRepository itemRepository) {
-        this.repository = repository;
-        this.userRepository = userRepository;
-        this.itemRepository = itemRepository;
-    }
 
     public BookingInfoDto addBooking(Long userId, BookingDto bookingDto) {
         if (!BookingValidator.bookingValidate(bookingDto)) {
@@ -98,6 +91,7 @@ public class BookingService {
 
         return BookingMapper.toBookingInfoDto(repository.save(booking));
     }
+
 
     public BookingInfoDto getCurrentBooking(Long userId, Long bookingId) {
         Booking booking = repository.findById(bookingId)

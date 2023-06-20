@@ -10,6 +10,7 @@ import java.util.List;
 @Data
 @Builder
 public class ItemInfoDto {
+
     private Long id;
     private Long ownerId;
     private String name;

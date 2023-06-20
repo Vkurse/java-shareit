@@ -1,27 +1,23 @@
 package ru.practicum.shareit.user.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exception.EntityAlreadyExist;
+import ru.practicum.shareit.exception.ObjectNotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserJpaRepository;
-import ru.practicum.shareit.exception.EntityAlreadyExist;
-import ru.practicum.shareit.exception.ObjectNotFoundException;
 
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserJpaRepository repository;
-
-    @Autowired
-    public UserServiceImpl(UserJpaRepository repository) {
-        this.repository = repository;
-    }
 
     @Override
     public List<UserDto> getUsers() {
@@ -55,7 +51,7 @@ public class UserServiceImpl implements UserService {
     public UserDto updateUser(Long userId, UserDto user) {
         User updateUser = repository.findById(userId)
                 .orElseThrow(() -> new ObjectNotFoundException("User not found."));
-        return UserMapper.toUserDto(repository.save(updateNameAndEmailUser(updateUser, user)));
+        return UserMapper.toUserDto(repository.save(userPatchNameAndEmail(updateUser, user)));
     }
 
     @Transactional
@@ -67,7 +63,7 @@ public class UserServiceImpl implements UserService {
         repository.deleteById(userId);
     }
 
-    private User updateNameAndEmailUser(User updatedUser, UserDto user) {
+    private User userPatchNameAndEmail(User updatedUser, UserDto user) {
 
         if (user.getName() != null) {
             updatedUser.setName(user.getName());
@@ -76,7 +72,7 @@ public class UserServiceImpl implements UserService {
             if (!repository.existsUserByEmail(user.getEmail())) {
                 updatedUser.setEmail(user.getEmail());
             } else {
-                throw new EntityAlreadyExist("Такой email уже существует.");
+                throw new EntityAlreadyExist("Email already exists.");
             }
         }
         return updatedUser;

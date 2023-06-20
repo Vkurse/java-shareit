@@ -1,24 +1,22 @@
 package ru.practicum.shareit.booking.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingInfoDto;
 import ru.practicum.shareit.booking.service.BookingService;
+import ru.practicum.shareit.exception.InvalidEntityException;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/bookings")
+@RequiredArgsConstructor
 public class BookingController {
 
     private static final String USERID_HEADER = "X-Sharer-User-Id";
     private final BookingService bookingService;
 
-    @Autowired
-    public BookingController(BookingService bookingService) {
-        this.bookingService = bookingService;
-    }
 
     @PostMapping
     public BookingInfoDto addBooking(@RequestHeader(USERID_HEADER) Long userId, @RequestBody BookingDto booking) {
@@ -41,13 +39,23 @@ public class BookingController {
 
     @GetMapping
     public List<BookingInfoDto> getBooking(@RequestHeader(USERID_HEADER) Long userId,
-                                           @RequestParam(name = "state", defaultValue = "all") String stateParam) {
-        return bookingService.getBooking(userId, stateParam);
+                                           @RequestParam(name = "state", defaultValue = "all") String stateParam,
+                                           @RequestParam(name = "from", required = false, defaultValue = "0") Integer from,
+                                           @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
+        if (from < 0 || size < 0) {
+            throw new InvalidEntityException("Arguments can't be negative.");
+        }
+        return bookingService.getBooking(userId, stateParam, from, size);
     }
 
     @GetMapping("/owner")
     public List<BookingInfoDto> getOwnerBooking(@RequestHeader(USERID_HEADER) Long userId,
-                                                @RequestParam(name = "state", defaultValue = "all") String stateParam) {
-        return bookingService.getOwnerBooking(userId, stateParam);
+                                                @RequestParam(name = "state", defaultValue = "all") String stateParam,
+                                                @RequestParam(name = "from", required = false, defaultValue = "0") Integer from,
+                                                @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
+        if (from < 0 || size < 0) {
+            throw new InvalidEntityException("Arguments can't be negative.");
+        }
+        return bookingService.getOwnerBooking(userId, stateParam, from, size);
     }
 }

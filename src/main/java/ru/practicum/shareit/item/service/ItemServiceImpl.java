@@ -19,6 +19,7 @@ import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemJpaRepository;
 import ru.practicum.shareit.item.validator.ItemValidator;
 import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.repository.UserJpaRepository;
 
 import javax.transaction.Transactional;
@@ -36,7 +37,7 @@ public class ItemServiceImpl implements ItemService {
     private final UserJpaRepository userRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
-
+    private final ItemRequestRepository itemRequestRepository;
 
     @Override
     public List<ItemInfoDto> getItems(Long userId) {
@@ -51,18 +52,14 @@ public class ItemServiceImpl implements ItemService {
     public ItemInfoDto getItem(Long itemId, Long userId) {
         Item item = repository.findById(itemId)
                 .orElseThrow(() -> new ObjectNotFoundException("Item not found."));
-
         ItemInfoDto itemInfoDto = ItemMapper.toItemInfo(item);
-
         if (item.getOwner().getId().equals(userId)) {
             setBookingToItem(itemInfoDto);
         }
-
         List<CommentDto> comments = commentRepository.findByItem_Id(itemId)
                 .stream()
                 .map(CommentMapper::toCommentDto)
                 .collect(Collectors.toList());
-
         itemInfoDto.setComments(comments.isEmpty() ? Collections.emptyList() : comments);
 
         return itemInfoDto;
@@ -75,7 +72,14 @@ public class ItemServiceImpl implements ItemService {
         }
         Item newItem = ItemMapper.toItem(item);
         newItem.setOwner(userRepository.findById(userId).orElseThrow(() ->
-                new ObjectNotFoundException("User not found.")));
+                new ObjectNotFoundException("Owner not found.")));
+        if (item.getRequestId() == null) {
+            return ItemMapper.toDto(repository.save(newItem));
+        }
+        ItemRequest itemRequest = itemRequestRepository.findById(item.getRequestId())
+                .orElseThrow(() ->
+                        new ObjectNotFoundException("Request not found."));
+        newItem.setRequest(itemRequest);
         return ItemMapper.toDto(repository.save(newItem));
     }
 
@@ -88,9 +92,7 @@ public class ItemServiceImpl implements ItemService {
         if (!Objects.equals(updatedItem.getOwner().getId(), userId)) {
             throw new ObjectNotFoundException("Item not belongs to this user.");
         }
-
-        updatedItem = itemUpdate(updatedItem, item);
-        return ItemMapper.toDto(repository.save(updatedItem));
+        return ItemMapper.toDto(repository.save(itemUpdate(updatedItem, item)));
     }
 
     @Transactional
@@ -113,7 +115,6 @@ public class ItemServiceImpl implements ItemService {
         }
     }
 
-    @Override
     public CommentDto addComment(Long userId, Long itemId, CommentDto commentDto) {
         validateComment(userId, itemId, commentDto);
         Comment comment = CommentMapper.toComment(commentDto);
@@ -160,8 +161,9 @@ public class ItemServiceImpl implements ItemService {
             updatedItem.setOwner(userRepository.findById(itemDto.getOwner())
                     .orElseThrow(() -> new ObjectNotFoundException("User not found.")));
         }
-        if (itemDto.getRequest() != null) {
-            updatedItem.setRequest(new ItemRequest());
+        if (itemDto.getRequestId() != null) {
+            updatedItem.setRequest(itemRequestRepository.findById(itemDto.getRequestId()).orElseThrow(() ->
+                    new ObjectNotFoundException("Request not found.")));
         }
         return updatedItem;
     }

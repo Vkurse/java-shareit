@@ -92,7 +92,9 @@ public class ItemServiceImpl implements ItemService {
         if (!Objects.equals(updatedItem.getOwner().getId(), userId)) {
             throw new ObjectNotFoundException("Item not belongs to this user.");
         }
-        return ItemMapper.toDto(repository.save(itemUpdate(updatedItem, item)));
+        Item savedItem = itemUpdate(updatedItem, item);
+        repository.save(savedItem);
+        return ItemMapper.toDto(savedItem);
     }
 
     @Transactional

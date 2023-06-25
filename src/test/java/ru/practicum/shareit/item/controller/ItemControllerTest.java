@@ -11,7 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemInfoDto;
-import ru.practicum.shareit.item.service.ItemService;
+import ru.practicum.shareit.item.service.ItemServiceImpl;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,7 +33,7 @@ class ItemControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    private ItemService itemService;
+    private ItemServiceImpl itemService;
 
     private ItemDto itemDto;
     private ItemInfoDto itemInfoDto;
@@ -183,5 +183,6 @@ class ItemControllerTest {
                 .andExpect(jsonPath("$[1].name", is("item2Name")))
                 .andExpect(jsonPath("$[1].description", is("item2Description")))
                 .andExpect(jsonPath("$[1].available", is(true)));
+
     }
 }

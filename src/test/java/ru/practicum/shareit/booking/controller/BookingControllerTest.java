@@ -29,15 +29,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = BookingController.class)
 class BookingControllerTest {
     @Autowired
-    ObjectMapper mapper;
+    private ObjectMapper mapper;
     @MockBean
-    BookingService bookingService;
+    private BookingService bookingService;
     @Autowired
     private MockMvc mockMvc;
 
-    BookingInfoDto bookingInfoDto;
+    private BookingInfoDto bookingInfoDto;
 
-    BookingDto bookingDto;
+    private BookingDto bookingDto;
 
     @BeforeEach
     void setUp() {
@@ -113,10 +113,17 @@ class BookingControllerTest {
         mockMvc.perform(get("/bookings" + "?state=ALL")
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header("X-Sharer-User-Id", 10L)
+                        .header("X-Sharer-User-Id", 1L)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(List.of(bookingInfoDto))));
+
+        mockMvc.perform(get("/bookings" + "?state=ALL&size=-10")
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-Sharer-User-Id", 1L)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -131,5 +138,12 @@ class BookingControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(List.of(bookingInfoDto))));
+
+        mockMvc.perform(get("/bookings" + "/owner?state=ALL&size=-10")
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-Sharer-User-Id", 10L)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 }

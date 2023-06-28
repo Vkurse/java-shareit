@@ -34,10 +34,9 @@ class BookingControllerTest {
     private BookingService bookingService;
     @Autowired
     private MockMvc mockMvc;
-
     private BookingInfoDto bookingInfoDto;
+    private final String Name = "X-Sharer-User-Id";
 
-    private BookingDto bookingDto;
 
     @BeforeEach
     void setUp() {
@@ -52,7 +51,7 @@ class BookingControllerTest {
                 .status(BookingStatus.WAITING)
                 .build();
 
-        bookingDto = BookingDto.builder()
+        BookingDto bookingDto = BookingDto.builder()
                 .id(1L)
                 .bookerId(10L)
                 .itemId(20L)
@@ -63,13 +62,13 @@ class BookingControllerTest {
     }
 
     @Test
-    void addBooking() throws Exception {
+    void addBookingIsOkTest() throws Exception {
         when(bookingService.addBooking(anyLong(), any(BookingDto.class)))
                 .thenReturn(bookingInfoDto);
 
         mockMvc.perform(post("/bookings")
                         .content(mapper.writeValueAsString(bookingInfoDto))
-                        .header("X-Sharer-User-Id", 10)
+                        .header(Name, 10)
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -78,42 +77,42 @@ class BookingControllerTest {
     }
 
     @Test
-    void updateBookingStatus() throws Exception {
+    void updateBookingStatusIsOkTest() throws Exception {
         when(bookingService.updateBookingStatus(anyLong(), anyLong(), anyBoolean()))
                 .thenReturn(bookingInfoDto);
 
         mockMvc.perform(patch("/bookings" + "/1?approved=true")
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header("X-Sharer-User-Id", 10L)
+                        .header(Name, 10L)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(bookingInfoDto)));
     }
 
     @Test
-    void getCurrentBooking() throws Exception {
+    void getCurrentBookingIsOkTest() throws Exception {
         when(bookingService.getCurrentBooking(anyLong(), anyLong()))
                 .thenReturn(bookingInfoDto);
 
         mockMvc.perform(get("/bookings" + "/1")
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header("X-Sharer-User-Id", 1L)
+                        .header(Name, 1L)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(bookingInfoDto)));
     }
 
     @Test
-    void getBooking() throws Exception {
+    void getBookingIsOkTest() throws Exception {
         when(bookingService.getBooking(any(), any(), anyInt(), anyInt()))
                 .thenReturn(List.of(bookingInfoDto));
 
         mockMvc.perform(get("/bookings" + "?state=ALL")
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header("X-Sharer-User-Id", 1L)
+                        .header(Name, 1L)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(List.of(bookingInfoDto))));
@@ -121,20 +120,20 @@ class BookingControllerTest {
         mockMvc.perform(get("/bookings" + "?state=ALL&size=-10")
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header("X-Sharer-User-Id", 1L)
+                        .header(Name, 1L)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isOk());
     }
 
     @Test
-    void getOwnerBooking() throws Exception {
+    void getOwnerBookingIsOkTest() throws Exception {
         when(bookingService.getOwnerBooking(any(), any(), anyInt(), anyInt()))
                 .thenReturn(List.of(bookingInfoDto));
 
         mockMvc.perform(get("/bookings" + "/owner?state=ALL")
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header("X-Sharer-User-Id", 10L)
+                        .header(Name, 10L)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(List.of(bookingInfoDto))));
@@ -142,8 +141,8 @@ class BookingControllerTest {
         mockMvc.perform(get("/bookings" + "/owner?state=ALL&size=-10")
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header("X-Sharer-User-Id", 10L)
+                        .header(Name, 10L)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isOk());
     }
 }

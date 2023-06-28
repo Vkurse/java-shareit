@@ -64,7 +64,7 @@ public class ItemServiceImpl implements ItemService {
 
         return itemInfoDto;
     }
-
+    @Transactional
     @Override
     public ItemDto addItem(Long userId, ItemDto item) {
         if (ItemValidator.itemCheck(item)) {

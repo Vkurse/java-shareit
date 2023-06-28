@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingInfoDto;
 import ru.practicum.shareit.booking.service.BookingService;
-import ru.practicum.shareit.exception.InvalidEntityException;
 
 import java.util.List;
 
@@ -40,22 +39,18 @@ public class BookingController {
     @GetMapping
     public List<BookingInfoDto> getBooking(@RequestHeader(USERID_HEADER) Long userId,
                                            @RequestParam(name = "state", defaultValue = "all") String stateParam,
-                                           @RequestParam(name = "from", required = false, defaultValue = "0") Integer from,
-                                           @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
-        if (from < 0 || size < 0) {
-            throw new InvalidEntityException("Arguments can't be negative.");
-        }
+                                           @RequestParam(required = false, defaultValue = "0") Integer from,
+                                           @RequestParam(required = false, defaultValue = "10") Integer size) {
+
         return bookingService.getBooking(userId, stateParam, from, size);
     }
 
     @GetMapping("/owner")
     public List<BookingInfoDto> getOwnerBooking(@RequestHeader(USERID_HEADER) Long userId,
                                                 @RequestParam(name = "state", defaultValue = "all") String stateParam,
-                                                @RequestParam(name = "from", required = false, defaultValue = "0") Integer from,
-                                                @RequestParam(name = "size", required = false, defaultValue = "10") Integer size) {
-        if (from < 0 || size < 0) {
-            throw new InvalidEntityException("Arguments can't be negative.");
-        }
+                                                @RequestParam(required = false, defaultValue = "0") Integer from,
+                                                @RequestParam(required = false, defaultValue = "10") Integer size) {
+
         return bookingService.getOwnerBooking(userId, stateParam, from, size);
     }
 }

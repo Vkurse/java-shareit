@@ -108,6 +108,10 @@ public class BookingService {
 
     public List<BookingInfoDto> getBooking(Long userId, String stateParam, Integer from, Integer size) {
 
+        if (from < 0 || size < 0) {
+            throw new InvalidEntityException("Arguments can't be negative.");
+        }
+
         BookingState bookingState = checkState(stateParam);
 
         Sort sort = Sort.by(Sort.Direction.DESC, "start");
@@ -144,6 +148,10 @@ public class BookingService {
     }
 
     public List<BookingInfoDto> getOwnerBooking(Long userId, String stateParam, Integer from, Integer size) {
+
+        if (from < 0 || size < 0) {
+            throw new InvalidEntityException("Arguments can't be negative.");
+        }
 
         BookingState bookingState = checkState(stateParam);
 

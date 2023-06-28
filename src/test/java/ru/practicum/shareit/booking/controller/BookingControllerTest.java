@@ -35,7 +35,7 @@ class BookingControllerTest {
     @Autowired
     private MockMvc mockMvc;
     private BookingInfoDto bookingInfoDto;
-    private final String name = "X-Sharer-User-Id";
+    private static final String USERID_HEADER = "X-Sharer-User-Id";
 
 
     @BeforeEach
@@ -68,7 +68,7 @@ class BookingControllerTest {
 
         mockMvc.perform(post("/bookings")
                         .content(mapper.writeValueAsString(bookingInfoDto))
-                        .header(name, 10)
+                        .header(USERID_HEADER, 10)
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -84,7 +84,7 @@ class BookingControllerTest {
         mockMvc.perform(patch("/bookings" + "/1?approved=true")
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header(name, 10L)
+                        .header(USERID_HEADER, 10L)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(bookingInfoDto)));
@@ -98,7 +98,7 @@ class BookingControllerTest {
         mockMvc.perform(get("/bookings" + "/1")
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header(name, 1L)
+                        .header(USERID_HEADER, 1L)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(bookingInfoDto)));
@@ -112,7 +112,7 @@ class BookingControllerTest {
         mockMvc.perform(get("/bookings" + "?state=ALL")
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header(name, 1L)
+                        .header(USERID_HEADER, 1L)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(List.of(bookingInfoDto))));
@@ -120,7 +120,7 @@ class BookingControllerTest {
         mockMvc.perform(get("/bookings" + "?state=ALL&size=-10")
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header(name, 1L)
+                        .header(USERID_HEADER, 1L)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
@@ -133,7 +133,7 @@ class BookingControllerTest {
         mockMvc.perform(get("/bookings" + "/owner?state=ALL")
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header(name, 10L)
+                        .header(USERID_HEADER, 10L)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mapper.writeValueAsString(List.of(bookingInfoDto))));
@@ -141,7 +141,7 @@ class BookingControllerTest {
         mockMvc.perform(get("/bookings" + "/owner?state=ALL&size=-10")
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header(name, 10L)
+                        .header(USERID_HEADER, 10L)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

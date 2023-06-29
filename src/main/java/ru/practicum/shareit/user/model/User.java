@@ -15,6 +15,7 @@ import javax.validation.constraints.NotBlank;
 @Setter
 @ToString
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

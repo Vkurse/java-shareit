@@ -4,7 +4,7 @@ import lombok.*;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Builder
 @AllArgsConstructor
@@ -15,6 +15,7 @@ import java.time.LocalDate;
 @Setter
 @ToString
 public class ItemRequest {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,8 +24,9 @@ public class ItemRequest {
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = User.class)
+    @JoinColumn(name = "requestor_id")
     private User requestor;
 
     @Column
-    private LocalDate created;
+    private LocalDateTime created;
 }

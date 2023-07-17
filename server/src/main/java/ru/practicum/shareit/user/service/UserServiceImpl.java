@@ -1,80 +1,67 @@
 package ru.practicum.shareit.user.service;
 
-import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exceptions.EntityAlreadyExist;
-import ru.practicum.shareit.exceptions.ObjectNotFoundException;
-import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.mapper.UserMapper;
+import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.exceptions.DataNotFoundException;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.repository.UserJpaRepository;
+import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.repository.UserRepository;
 
-import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
+
+import static ru.practicum.shareit.user.mapper.UserMapper.toUserDto;
 
 @Service
-@RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
 
-    private final UserJpaRepository repository;
+    private final UserRepository userRepository;
 
-    @Override
-    public List<UserDto> getUsers() {
-        return repository.findAll()
-                .stream()
-                .map(UserMapper::toUserDto)
-                .collect(Collectors.toList());
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
-    public UserDto getUser(Long userId) {
-        return repository.findById(userId).map(UserMapper::toUserDto)
-                .orElseThrow(() ->
-                        new ObjectNotFoundException("User not found."));
-    }
-
-    @Transactional
-    @Override
-    public UserDto addUser(UserDto user) {
-        if (user.getEmail() == null) {
-            throw new IllegalArgumentException("Invalid user body.");
+    public List<UserDto> getAll() {
+        List<UserDto> users = new ArrayList<>();
+        for (User user : userRepository.findAll()) {
+            users.add(toUserDto(user));
         }
-        if (repository.existsUserByEmail(user.getEmail())) {
-            repository.save(UserMapper.toUser(user));
-            throw new EntityAlreadyExist("User already exist.");
-        }
-        return UserMapper.toUserDto(repository.save(UserMapper.toUser(user)));
+        return users;
     }
 
     @Override
-    public UserDto updateUser(Long userId, UserDto user) {
-        User updateUser = repository.findById(userId)
-                .orElseThrow(() -> new ObjectNotFoundException("User not found."));
-        return UserMapper.toUserDto(repository.save(userPatchNameAndEmail(updateUser, user)));
+    public UserDto getById(Long id) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new DataNotFoundException(String.format("Пользователь с id %d не найден", id)));
+        return toUserDto(user);
     }
 
     @Transactional
     @Override
-    public void deleteUser(Long userId) {
-        if (!repository.existsById(userId)) {
-            throw new ObjectNotFoundException("User not found.");
-        }
-        repository.deleteById(userId);
+    public UserDto create(User user) {
+        User createdUser = userRepository.save(user);
+        return toUserDto(createdUser);
     }
 
-    private User userPatchNameAndEmail(User updatedUser, UserDto user) {
+    @Transactional
+    @Override
+    public UserDto update(User user, Long id) {
+        User updatedUser = userRepository.findById(id).orElseThrow(
+                () -> new DataNotFoundException(String.format("Пользователь с id %d не найден", id)));
+        Optional.ofNullable(user.getEmail()).ifPresent(updatedUser::setEmail);
+        Optional.ofNullable(user.getName()).ifPresent(updatedUser::setName);
 
-        if (user.getName() != null) {
-            updatedUser.setName(user.getName());
-        }
-        if (user.getEmail() != null && !updatedUser.getEmail().equals(user.getEmail())) {
-            if (!repository.existsUserByEmail(user.getEmail())) {
-                updatedUser.setEmail(user.getEmail());
-            } else {
-                throw new EntityAlreadyExist("Email already exists.");
-            }
-        }
-        return updatedUser;
+        return toUserDto(userRepository.save(updatedUser));
+    }
+
+    @Transactional
+    @Override
+    public void delete(Long id) {
+        getById(id);
+        userRepository.deleteById(id);
     }
 }

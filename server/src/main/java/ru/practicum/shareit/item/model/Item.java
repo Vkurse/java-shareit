@@ -1,51 +1,39 @@
 package ru.practicum.shareit.item.model;
 
-import lombok.*;
-import ru.practicum.shareit.request.model.ItemRequest;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import ru.practicum.shareit.itemRequest.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
 
+@Data
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
-@Table(name = "item")
-@Getter
-@Setter
-@ToString
+@Table(name = "items")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Item {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
-    @Column(name = "name")
+    @Column(nullable = false)
     private String name;
 
-    @Column(name = "description")
+    @Column(length = 512, nullable = false)
     private String description;
 
-    @Column(name = "available")
+    @Column(name = "is_available")
     private Boolean available;
 
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = User.class)
-    @JoinColumn(name = "owner_id", referencedColumnName = "id")
+    @ManyToOne
+    @JoinColumn(name = "owner_id", referencedColumnName = "id", nullable = false)
     private User owner;
 
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = ItemRequest.class)
+    @ManyToOne
     @JoinColumn(name = "request_id", referencedColumnName = "id")
     private ItemRequest request;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Item)) return false;
-        return id != null && id.equals(((Item) o).getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 }

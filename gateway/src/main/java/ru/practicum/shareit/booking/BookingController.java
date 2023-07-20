@@ -26,7 +26,7 @@ public class BookingController {
     @GetMapping
     public ResponseEntity<Object> getAllByBooker(@RequestHeader(USERID_HEADER) long userId,
                                               @RequestParam(defaultValue = "all") String stateParam,
-                                              @PositiveOrZero @RequestParam(ndefaultValue = "0") Integer from,
+                                              @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
                                               @Positive @RequestParam(defaultValue = "10") Integer size) {
         BookingState state = BookingState.from(stateParam)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));

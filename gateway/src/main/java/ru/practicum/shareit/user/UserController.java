@@ -19,6 +19,7 @@ public class UserController {
     public ResponseEntity<Object> getAll() {
         log.info("Пришел /GET запрос на получение всех пользователей");
         ResponseEntity<Object> users = userClient.getALl();
+        log.info("Ответ отправлен {}", users);
         return users;
     }
 
@@ -26,6 +27,7 @@ public class UserController {
     public ResponseEntity<Object> getById(@PathVariable Long id) {
         log.info("Пришел /GET запрос на получение пользователя по id {}", id);
         ResponseEntity<Object> user = userClient.getById(id);
+        log.info("Ответ отправлен {}", user);
         return user;
     }
 
@@ -33,6 +35,7 @@ public class UserController {
     public ResponseEntity<Object> create(@Valid @RequestBody UserRequestDto user) {
         log.info("Пришел /POST запрос на создание пользователя {}", user);
         ResponseEntity<Object> createdUser = userClient.create(user);
+        log.info("Ответ отправлен {}", createdUser);
         return createdUser;
     }
 
@@ -40,6 +43,7 @@ public class UserController {
     public ResponseEntity<Object> update(@RequestBody UserRequestDto user, @PathVariable Long id) {
         log.info("Пришел /PATCH запрос на изменение данных пользователя с id {}", id);
         ResponseEntity<Object> updatedUser = userClient.update(id, user);
+        log.info("Ответ отправлен {}", updatedUser);
         return updatedUser;
     }
 
@@ -47,6 +51,7 @@ public class UserController {
     public ResponseEntity<Object> delete(@PathVariable Long id) {
         log.info("Пришел /DELETE запрос на удаление пользователя с id {}", id);
         ResponseEntity<Object> deletedUser = userClient.delete(id);
+        log.info("Пользователь {} удален", deletedUser);
         return deletedUser;
     }
 }
